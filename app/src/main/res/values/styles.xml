@@ -24,6 +24,8 @@
         <item name="android:textColorPrimary">@color/primary_text_black</item>
         <item name="android:textColorSecondary">@color/secondary_text_gray</item>
         <item name="iconTint">@color/icons_white</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">normal</item>
     </style>
 
 </resources>

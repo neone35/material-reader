@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -110,16 +111,18 @@ public class ArticleDetailActivity extends AppCompatActivity
         mCursor = cursor;
         mPagerAdapter.notifyDataSetChanged();
 
-        int position = mCursor.getPosition();
-        mCursor.moveToPosition(position);
         // Select the start ID
-        if (mStartId > 0 && !mCursor.isAfterLast()) {
-            mCursor.moveToPosition(position);
-            // TODO: optimize
-            if (mCursor.getLong(ArticleLoader.Query._ID) == mStartId) {
-                mPager.setCurrentItem(position, false);
+        if (mStartId > 0) {
+            mCursor.moveToFirst();
+            int columnNum = mCursor.getColumnCount();
+            for (int i = 0; i < columnNum; i++) {
+                if (mCursor.getLong(ArticleLoader.Query._ID) == mStartId) {
+                    final int position = mCursor.getPosition();
+                    mPager.setCurrentItem(position, false);
+                    break;
+                }
+                mCursor.moveToNext();
             }
-            mCursor.moveToNext();
             mStartId = 0;
         }
     }
