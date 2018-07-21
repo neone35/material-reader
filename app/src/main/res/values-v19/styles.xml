@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Base.Theme.Detail" parent="Base.Theme">
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+</resources>

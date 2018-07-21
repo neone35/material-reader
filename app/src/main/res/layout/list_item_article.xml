@@ -19,11 +19,6 @@
             android:id="@+id/fl_article_header_holder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -40,8 +35,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="top"
-                tools:layout_height="200dp"
-                android:background="@drawable/photo_background_protection" />
+                android:background="@drawable/photo_background_protection"
+                tools:layout_height="200dp" />
 
             <TextView
                 android:id="@+id/article_title"

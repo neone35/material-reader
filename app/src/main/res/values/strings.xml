@@ -1,7 +1,7 @@
 <resources>
 
-    <string name="app_name">XYZ Reader</string>
-    <string name="welcome_xyz_reader">Welcome to XYZ Reader!</string>
+    <string name="app_name">Material Reader</string>
+    <string name="welcome_material_reader">Welcome to Material Reader!</string>
 
     <string name="action_refresh">Refresh</string>
     <string name="action_settings">Settings</string>
