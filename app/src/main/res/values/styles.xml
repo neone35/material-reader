@@ -28,4 +28,9 @@
         <item name="android:textStyle">normal</item>
     </style>
 
+    <style name="articleBody" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:fontFamily">serif</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
 </resources>

@@ -49,7 +49,7 @@
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
                 android:paddingTop="8dp"
-                android:textColor="@color/icons_white"
+                android:textColor="?iconTint"
                 android:textStyle="bold"
                 tools:text="Article title" />
 
