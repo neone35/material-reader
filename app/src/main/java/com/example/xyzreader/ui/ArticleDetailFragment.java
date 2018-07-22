@@ -2,6 +2,7 @@ package com.example.xyzreader.ui;
 
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -38,7 +39,6 @@ import android.widget.TextView;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -55,6 +55,7 @@ public class ArticleDetailFragment extends Fragment implements
 
     public static final String ARG_ITEM_ID = "item_id";
     private static final float PARALLAX_FACTOR = 1.25f;
+    private static final String STATE_SCROLL_POSITION = "scroll_state";
 
     private Cursor mCursor;
     private long mItemId;
@@ -66,6 +67,8 @@ public class ArticleDetailFragment extends Fragment implements
     private ProgressBar mProgressBar;
     private FloatingActionButton mGoToTopFab;
     private FloatingActionButton mShareFab;
+    private ExpandableTextView mExpBodyView;
+    private TextView mBodyView;
 
     private int mTopInset;
     private View mPhotoContainerView;
@@ -126,6 +129,24 @@ public class ArticleDetailFragment extends Fragment implements
         // fragments because their mIndex is -1 (haven't been added to the activity yet). Thus,
         // we do this in onActivityCreated.
         getLoaderManager().initLoader(0, null, this);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null && mScrollView != null) {
+            int savedScrollPos = savedInstanceState.getInt(STATE_SCROLL_POSITION);
+            mScrollView.setScrollY(savedScrollPos);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mScrollY != 0 && mScrollView != null) {
+            outState.putInt(STATE_SCROLL_POSITION, mScrollY);
+        }
+
     }
 
     @Override
@@ -250,9 +271,9 @@ public class ArticleDetailFragment extends Fragment implements
         TextView titleView = mRootView.findViewById(R.id.article_title);
         TextView bylineView = mRootView.findViewById(R.id.article_byline);
         bylineView.setMovementMethod(new LinkMovementMethod());
-        ExpandableTextView bodyView = mRootView.findViewById(R.id.article_body);
+        mExpBodyView = mRootView.findViewById(R.id.expandable_article_body);
         // animation for expand
-        setupExpandableBodyView(bodyView);
+        setupExpandableBodyView(mExpBodyView);
 
         if (mCursor != null) {
             mRootView.setAlpha(0);
@@ -285,7 +306,7 @@ public class ArticleDetailFragment extends Fragment implements
             mBodyText = Html.fromHtml(
                     mCursor.getString(ArticleLoader.Query.BODY)
                             .replaceAll("(\r\n|\n)", "<br />"));
-            bodyView.setText(mBodyText);
+            mExpBodyView.setText(mBodyText);
 
             // load image
             Target target = new Target() {
@@ -321,7 +342,7 @@ public class ArticleDetailFragment extends Fragment implements
             mRootView.setVisibility(View.GONE);
             titleView.setText("N/A");
             bylineView.setText("N/A");
-            bodyView.setText("N/A");
+            mExpBodyView.setText("N/A");
         }
     }
 

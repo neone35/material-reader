@@ -2,6 +2,7 @@ package com.example.xyzreader.ui;
 
 import android.app.ActivityOptions;
 import android.os.Build;
+import android.os.Parcelable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.LoaderManager;
@@ -48,11 +49,13 @@ public class ArticleListActivity extends AppCompatActivity implements
         SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = ArticleListActivity.class.toString();
+    private static final String KEY_RV_POSITION_STATE = "rv_position";
     private Toolbar mToolbar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
     private AppBarLayout mAppBarLayout;
     private View mParentView;
+    private StaggeredGridLayoutManager mStaggeredGridLayoutManager;
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss", Locale.US);
     // Use default locale format
@@ -129,14 +132,31 @@ public class ArticleListActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(KEY_RV_POSITION_STATE, mStaggeredGridLayoutManager.onSaveInstanceState());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {
+            Parcelable savedGridLayoutManager = savedInstanceState.getParcelable(KEY_RV_POSITION_STATE);
+            if (savedGridLayoutManager != null) {
+                mStaggeredGridLayoutManager.onRestoreInstanceState(savedGridLayoutManager);
+            }
+        }
+    }
+
+    @Override
     public void onLoadFinished(@NonNull Loader<Cursor> cursorLoader, Cursor cursor) {
         Adapter adapter = new Adapter(cursor);
         adapter.setHasStableIds(true);
         mRecyclerView.setAdapter(adapter);
         int columnCount = getResources().getInteger(R.integer.list_column_count);
-        StaggeredGridLayoutManager sglm =
+        mStaggeredGridLayoutManager =
                 new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(sglm);
+        mRecyclerView.setLayoutManager(mStaggeredGridLayoutManager);
     }
 
     @Override
