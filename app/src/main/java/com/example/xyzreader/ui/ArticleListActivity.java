@@ -1,5 +1,7 @@
 package com.example.xyzreader.ui;
 
+import android.app.ActivityOptions;
+import android.os.Build;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.LoaderManager;
@@ -209,8 +211,22 @@ public class ArticleListActivity extends AppCompatActivity implements
                     ImageLoaderHelper.getInstance(ArticleListActivity.this).getImageLoader());
             holder.thumbnailView.setAspectRatio(mCursor.getFloat(ArticleLoader.Query.ASPECT_RATIO));
 
-            mParentView.setOnClickListener(view1 -> startActivity(new Intent(Intent.ACTION_VIEW,
-                    ItemsContract.Items.buildItemUri(getItemId(position)))));
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Bundle thumbTransBundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        ArticleListActivity.this,
+                        holder.thumbnailView,
+                        getResources().getString(R.string.explode_card_image)
+                ).toBundle();
+                mParentView.setOnClickListener(view1 -> startActivity(
+                        new Intent(Intent.ACTION_VIEW,
+                                ItemsContract.Items.buildItemUri(getItemId(position))),
+                        thumbTransBundle));
+            } else {
+                mParentView.setOnClickListener(view1 -> startActivity(
+                        new Intent(Intent.ACTION_VIEW,
+                                ItemsContract.Items.buildItemUri(getItemId(position)))));
+            }
 
         }
 

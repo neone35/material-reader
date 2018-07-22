@@ -80,7 +80,6 @@
                 android:ellipsize="middle"
                 android:lineSpacingMultiplier="@fraction/detail_body_line_spacing_multiplier"
                 android:maxLines="5"
-                android:paddingBottom="8dp"
                 android:textColor="@color/secondary_text_gray"
                 android:textColorLink="@color/accent_cyan"
                 android:textSize="@dimen/detail_body_text_size"
@@ -90,7 +89,8 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp">
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp">
 
                 <TextView
                     android:id="@+id/tv_read_more"

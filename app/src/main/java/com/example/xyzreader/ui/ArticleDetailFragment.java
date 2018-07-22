@@ -30,6 +30,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -37,6 +38,7 @@ import android.widget.TextView;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -142,6 +144,7 @@ public class ArticleDetailFragment extends Fragment implements
                         .getIntent(), getString(R.string.action_share))));
         mGoToTopFab = mRootView.findViewById(R.id.inc_go_top_fab);
         mGoToTopFab.setOnClickListener(v -> mScrollView.setScrollY(0));
+        mGoToTopFab.setAlpha(0.35f);
 
         mScrollView = mRootView.findViewById(R.id.scrollview);
         mScrollView.setCallbacks(() -> {
@@ -292,6 +295,7 @@ public class ArticleDetailFragment extends Fragment implements
                     mMutedColor = p.getDarkMutedColor(0xFF333333);
                     mRootView.findViewById(R.id.meta_bar)
                             .setBackgroundColor(mMutedColor);
+                    scheduleStartPostponedTransition(mPhotoView);
                     mPhotoView.setImageBitmap(bitmap);
                     updateStatusBar();
                 }
@@ -319,6 +323,18 @@ public class ArticleDetailFragment extends Fragment implements
             bylineView.setText("N/A");
             bodyView.setText("N/A");
         }
+    }
+
+    private void scheduleStartPostponedTransition(final View sharedElement) {
+        sharedElement.getViewTreeObserver().addOnPreDrawListener(
+                new ViewTreeObserver.OnPreDrawListener() {
+                    @Override
+                    public boolean onPreDraw() {
+                        sharedElement.getViewTreeObserver().removeOnPreDrawListener(this);
+                        startPostponedEnterTransition();
+                        return true;
+                    }
+                });
     }
 
     @NonNull
