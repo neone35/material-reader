@@ -12,8 +12,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <FrameLayout
                 android:id="@+id/photo_container"
@@ -77,13 +77,13 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="8dp"
-                android:lineSpacingMultiplier="@fraction/detail_body_line_spacing_multiplier"
                 android:ellipsize="middle"
+                android:lineSpacingMultiplier="@fraction/detail_body_line_spacing_multiplier"
+                android:maxLines="5"
+                android:paddingBottom="8dp"
                 android:textColor="@color/secondary_text_gray"
                 android:textColorLink="@color/accent_cyan"
                 android:textSize="@dimen/detail_body_text_size"
-                android:maxLines="5"
-                android:paddingBottom="8dp"
                 app:animation_duration="500"
                 tools:text="@string/lorem_ipsum" />
 
@@ -117,8 +117,22 @@
 
     </com.example.xyzreader.ui.ObservableScrollView>
 
-    <include
-        android:id="@+id/inc_share_fab"
-        layout="@layout/fab_share_include" />
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end">
+
+        <include
+            android:id="@+id/inc_share_fab"
+            layout="@layout/fab_share_include"
+            android:visibility="visible" />
+
+        <include
+            android:id="@+id/inc_go_top_fab"
+            layout="@layout/fab_go_up_include"
+            android:visibility="invisible" />
+
+    </FrameLayout>
+
 
 </com.example.xyzreader.ui.DrawInsetsFrameLayout>

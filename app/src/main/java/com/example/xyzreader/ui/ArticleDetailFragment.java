@@ -2,6 +2,7 @@ package com.example.xyzreader.ui;
 
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.content.Intent;
@@ -9,8 +10,6 @@ import android.support.v4.content.Loader;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 
 import java.text.ParseException;
@@ -27,7 +26,6 @@ import android.text.Html;
 import android.text.Spanned;
 import android.text.format.DateUtils;
 import android.text.method.LinkMovementMethod;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,15 +35,12 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import at.blogc.android.views.ExpandableTextView;
-import me.grantland.widget.AutofitHelper;
 
 /**
  * A fragment representing a single Article detail screen. This fragment is
@@ -67,6 +62,8 @@ public class ArticleDetailFragment extends Fragment implements
     private DrawInsetsFrameLayout mDrawInsetsFrameLayout;
     private ColorDrawable mStatusBarColorDrawable;
     private ProgressBar mProgressBar;
+    private FloatingActionButton mGoToTopFab;
+    private FloatingActionButton mShareFab;
 
     private int mTopInset;
     private View mPhotoContainerView;
@@ -74,7 +71,8 @@ public class ArticleDetailFragment extends Fragment implements
     private int mScrollY;
     private boolean mIsCard = false;
     private int mStatusBarFullOpacityBottom;
-    private boolean isFragmentVisible;
+    private boolean isGoToTopFabVisible = false;
+    private Spanned mBodyText = null;
 
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss", Locale.US);
@@ -136,6 +134,14 @@ public class ArticleDetailFragment extends Fragment implements
         mDrawInsetsFrameLayout.setOnInsetsCallback(insets -> mTopInset = insets.top);
 
         mProgressBar = Objects.requireNonNull(getActivity()).findViewById(R.id.pb_holder);
+        mShareFab = mRootView.findViewById(R.id.inc_share_fab);
+        mShareFab.setOnClickListener(view ->
+                startActivity(Intent.createChooser(ShareCompat.IntentBuilder.from(Objects.requireNonNull(getActivity()))
+                        .setType("text/plain")
+                        .setText(mBodyText.toString())
+                        .getIntent(), getString(R.string.action_share))));
+        mGoToTopFab = mRootView.findViewById(R.id.inc_go_top_fab);
+        mGoToTopFab.setOnClickListener(v -> mScrollView.setScrollY(0));
 
         mScrollView = mRootView.findViewById(R.id.scrollview);
         mScrollView.setCallbacks(() -> {
@@ -143,18 +149,26 @@ public class ArticleDetailFragment extends Fragment implements
             getActivityCast().onUpButtonFloorChanged(mItemId, ArticleDetailFragment.this);
             mPhotoContainerView.setTranslationY((int) (mScrollY - mScrollY / PARALLAX_FACTOR));
             updateStatusBar();
+
+            if (mScrollY >= 1000) {
+                if (!isGoToTopFabVisible) {
+                    mShareFab.setVisibility(View.INVISIBLE);
+                    mGoToTopFab.setVisibility(View.VISIBLE);
+                    isGoToTopFabVisible = true;
+                }
+            } else {
+                if (isGoToTopFabVisible) {
+                    mGoToTopFab.setVisibility(View.INVISIBLE);
+                    mShareFab.setVisibility(View.VISIBLE);
+                    isGoToTopFabVisible = false;
+                }
+            }
         });
 
         mPhotoView = mRootView.findViewById(R.id.inc_detail_image);
         mPhotoContainerView = mRootView.findViewById(R.id.photo_container);
 
         mStatusBarColorDrawable = new ColorDrawable(0);
-
-        mRootView.findViewById(R.id.inc_share_fab).setOnClickListener(view ->
-                startActivity(Intent.createChooser(ShareCompat.IntentBuilder.from(Objects.requireNonNull(getActivity()))
-                        .setType("text/plain")
-                        .setText("Some sample text")
-                        .getIntent(), getString(R.string.action_share))));
 
         bindViews();
         updateStatusBar();
@@ -265,10 +279,10 @@ public class ArticleDetailFragment extends Fragment implements
             }
 
             // load body text
-            Spanned bodyText = Html.fromHtml(
+            mBodyText = Html.fromHtml(
                     mCursor.getString(ArticleLoader.Query.BODY)
                             .replaceAll("(\r\n|\n)", "<br />"));
-            bodyView.setText(bodyText);
+            bodyView.setText(mBodyText);
 
             // load image
             Target target = new Target() {
@@ -348,4 +362,5 @@ public class ArticleDetailFragment extends Fragment implements
                 ? (int) mPhotoContainerView.getTranslationY() + mPhotoView.getHeight() - mScrollY
                 : mPhotoView.getHeight() - mScrollY;
     }
+
 }

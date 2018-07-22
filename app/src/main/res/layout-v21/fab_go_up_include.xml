@@ -8,9 +8,7 @@
     android:layout_gravity="bottom|end"
     android:layout_margin="16dp"
     android:elevation="@dimen/fab_elevation"
-    android:stateListAnimator="@animator/fab_state_list_anim"
     app:fabSize="normal"
-    app:srcCompat="@drawable/ic_share_white_24dp" />
-
+    app:srcCompat="@drawable/ic_arrow_upward_white_24dp" />
 
 
