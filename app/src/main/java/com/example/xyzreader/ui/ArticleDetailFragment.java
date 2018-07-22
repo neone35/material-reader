@@ -32,6 +32,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -43,6 +44,7 @@ import com.example.xyzreader.data.ArticleLoader;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import at.blogc.android.views.ExpandableTextView;
 import me.grantland.widget.AutofitHelper;
 
 /**
@@ -72,6 +74,7 @@ public class ArticleDetailFragment extends Fragment implements
     private int mScrollY;
     private boolean mIsCard = false;
     private int mStatusBarFullOpacityBottom;
+    private boolean isFragmentVisible;
 
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss", Locale.US);
@@ -86,6 +89,7 @@ public class ArticleDetailFragment extends Fragment implements
      */
     public ArticleDetailFragment() {
     }
+
 
     public static ArticleDetailFragment newInstance(long itemId) {
         Bundle arguments = new Bundle();
@@ -141,7 +145,7 @@ public class ArticleDetailFragment extends Fragment implements
             updateStatusBar();
         });
 
-        mPhotoView = mRootView.findViewById(R.id.photo);
+        mPhotoView = mRootView.findViewById(R.id.inc_detail_image);
         mPhotoContainerView = mRootView.findViewById(R.id.photo_container);
 
         mStatusBarColorDrawable = new ColorDrawable(0);
@@ -197,15 +201,41 @@ public class ArticleDetailFragment extends Fragment implements
         }
     }
 
+    private void setupExpandableBodyView(ExpandableTextView bodyView) {
+        bodyView.setExpandInterpolator(new OvershootInterpolator());
+        TextView tvReadMore = mRootView.findViewById(R.id.tv_read_more);
+        tvReadMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bodyView.expand();
+            }
+        });
+        ProgressBar pbMoreLoader = mRootView.findViewById(R.id.pb_more);
+        bodyView.addOnExpandListener(new ExpandableTextView.OnExpandListener() {
+            @Override
+            public void onExpand(@NonNull ExpandableTextView view) {
+                tvReadMore.setVisibility(View.INVISIBLE);
+                pbMoreLoader.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onCollapse(@NonNull ExpandableTextView view) {
+
+            }
+        });
+    }
+
     private void bindViews() {
-        if (mRootView == null) {
+        if (mRootView == null || isStateSaved()) {
             return;
         }
 
         TextView titleView = mRootView.findViewById(R.id.article_title);
         TextView bylineView = mRootView.findViewById(R.id.article_byline);
         bylineView.setMovementMethod(new LinkMovementMethod());
-        TextView bodyView = mRootView.findViewById(R.id.article_body);
+        ExpandableTextView bodyView = mRootView.findViewById(R.id.article_body);
+        // animation for expand
+        setupExpandableBodyView(bodyView);
 
         if (mCursor != null) {
             mRootView.setAlpha(0);
@@ -246,22 +276,26 @@ public class ArticleDetailFragment extends Fragment implements
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                     Palette p = Palette.generate(bitmap, 12);
                     mMutedColor = p.getDarkMutedColor(0xFF333333);
-                    mPhotoView.setImageBitmap(bitmap);
                     mRootView.findViewById(R.id.meta_bar)
                             .setBackgroundColor(mMutedColor);
+                    mPhotoView.setImageBitmap(bitmap);
                     updateStatusBar();
                 }
 
                 @Override
                 public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                    mPhotoView.setImageDrawable(errorDrawable);
+                    Log.e(TAG, e.toString());
                 }
 
                 @Override
                 public void onPrepareLoad(Drawable placeHolderDrawable) {
+                    mPhotoView.setImageDrawable(placeHolderDrawable);
                 }
             };
             Picasso.get()
                     .load(mCursor.getString(ArticleLoader.Query.PHOTO_URL))
+                    .placeholder(R.drawable.empty_detail)
                     .into(target);
 
 

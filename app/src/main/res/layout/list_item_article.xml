@@ -23,20 +23,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <!--suppress AndroidLintContentDescription -->
-            <com.example.xyzreader.ui.DynamicHeightNetworkImageView
-                android:id="@+id/thumbnail"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="@color/light_gray"
-                android:scaleType="centerCrop" />
+            <include
+                android:id="@+id/inc_list_item_image"
+                layout="@layout/list_item_image_include" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="top"
                 android:background="@drawable/photo_background_protection"
-                tools:layout_height="200dp" />
+                tools:layout_height="250dp" />
 
             <TextView
                 android:id="@+id/article_title"

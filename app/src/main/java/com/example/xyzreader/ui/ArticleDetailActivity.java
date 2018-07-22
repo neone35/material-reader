@@ -1,5 +1,6 @@
 package com.example.xyzreader.ui;
 
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -43,7 +44,6 @@ public class ArticleDetailActivity extends AppCompatActivity
     private MyPagerAdapter mPagerAdapter;
     private View mUpButtonContainer;
     private View mUpButton;
-    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +56,7 @@ public class ArticleDetailActivity extends AppCompatActivity
         }
         setContentView(R.layout.activity_article_detail);
 
-        mProgressBar = findViewById(R.id.pb_holder);
+        ProgressBar mProgressBar = findViewById(R.id.pb_holder);
         mProgressBar.setVisibility(View.VISIBLE);
 
         getSupportLoaderManager().initLoader(0, null, this);
@@ -64,6 +64,9 @@ public class ArticleDetailActivity extends AppCompatActivity
         mPagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
         mPager = findViewById(R.id.pager);
         mPager.setAdapter(mPagerAdapter);
+        // Don't destroy pages that are offscreen (all-current)
+        // This won't call Fragment loader after it has been called once
+        mPager.setOffscreenPageLimit(Objects.requireNonNull(mPager.getAdapter()).getCount() - 1);
         mPager.setPageMargin((int) TypedValue
                 .applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics()));
         mPager.setPageMarginDrawable(new ColorDrawable(0x22000000));

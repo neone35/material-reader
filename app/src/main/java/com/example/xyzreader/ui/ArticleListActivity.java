@@ -1,6 +1,7 @@
 package com.example.xyzreader.ui;
 
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.LoaderManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -49,12 +50,13 @@ public class ArticleListActivity extends AppCompatActivity implements
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
     private AppBarLayout mAppBarLayout;
+    private View mParentView;
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss", Locale.US);
     // Use default locale format
     private SimpleDateFormat outputFormat = new SimpleDateFormat();
     // Most time functions can only handle 1902 - 2037
-    private GregorianCalendar START_OF_EPOCH = new GregorianCalendar(2,1,1);
+    private GregorianCalendar START_OF_EPOCH = new GregorianCalendar(2, 1, 1);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,12 +65,7 @@ public class ArticleListActivity extends AppCompatActivity implements
 
         mAppBarLayout = findViewById(R.id.app_bar_layout);
         // set elevation programatically
-        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                ViewCompat.setElevation(appBarLayout, 8);
-            }
-        });
+        mAppBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> ViewCompat.setElevation(appBarLayout, 8));
         mToolbar = findViewById(R.id.toolbar);
         final View toolbarContainerView = findViewById(R.id.toolbar_container);
 
@@ -153,10 +150,10 @@ public class ArticleListActivity extends AppCompatActivity implements
 
         ViewHolder(View view) {
             super(view);
-            thumbnailView = (DynamicHeightNetworkImageView) view.findViewById(R.id.thumbnail);
-            titleView = (TextView) view.findViewById(R.id.article_title);
-            dateView = (TextView) view.findViewById(R.id.article_date);
-            authorView = (TextView) view.findViewById(R.id.article_author);
+            thumbnailView = view.findViewById(R.id.inc_list_item_image);
+            titleView = view.findViewById(R.id.article_title);
+            dateView = view.findViewById(R.id.article_date);
+            authorView = view.findViewById(R.id.article_author);
         }
     }
 
@@ -176,11 +173,8 @@ public class ArticleListActivity extends AppCompatActivity implements
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = getLayoutInflater().inflate(R.layout.list_item_article, parent, false);
-            final ViewHolder vh = new ViewHolder(view);
-            view.setOnClickListener(view1 -> startActivity(new Intent(Intent.ACTION_VIEW,
-                    ItemsContract.Items.buildItemUri(getItemId(vh.getAdapterPosition())))));
-            return vh;
+            mParentView = getLayoutInflater().inflate(R.layout.list_item_article, parent, false);
+            return new ViewHolder(mParentView);
         }
 
         private Date parsePublishedDate() {
@@ -214,6 +208,10 @@ public class ArticleListActivity extends AppCompatActivity implements
                     mCursor.getString(ArticleLoader.Query.THUMB_URL),
                     ImageLoaderHelper.getInstance(ArticleListActivity.this).getImageLoader());
             holder.thumbnailView.setAspectRatio(mCursor.getFloat(ArticleLoader.Query.ASPECT_RATIO));
+
+            mParentView.setOnClickListener(view1 -> startActivity(new Intent(Intent.ACTION_VIEW,
+                    ItemsContract.Items.buildItemUri(getItemId(position)))));
+
         }
 
         @Override
