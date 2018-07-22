@@ -23,4 +23,13 @@
             android:contentDescription="@string/up"
             app:srcCompat="@drawable/ic_arrow_back_white_24dp" />
     </FrameLayout>
+
+    <ProgressBar
+        android:id="@+id/pb_holder"
+        style="@android:style/Widget.DeviceDefault.ProgressBar"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:visibility="invisible" />
+
 </FrameLayout>

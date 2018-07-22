@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <android.support.design.widget.FloatingActionButton
+    <android.support.design.widget.FloatingActionButton xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/share_fab"
         style="@style/Widget.Design.FloatingActionButton"
         android:layout_width="wrap_content"
@@ -14,5 +11,4 @@
         app:srcCompat="@drawable/ic_share_white_24dp">
 
     </android.support.design.widget.FloatingActionButton>
-</layout>
 

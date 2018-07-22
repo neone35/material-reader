@@ -25,4 +25,8 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     implementation files('libs/volley.jar')
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+
+    //3rd party
+    implementation 'me.grantland:autofittextview:0.2.1'
+    implementation 'com.squareup.picasso:picasso:2.71828'
 }

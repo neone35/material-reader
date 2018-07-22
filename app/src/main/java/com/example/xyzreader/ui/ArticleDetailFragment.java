@@ -1,5 +1,6 @@
 package com.example.xyzreader.ui;
 
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -32,12 +33,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+
+import me.grantland.widget.AutofitHelper;
 
 /**
  * A fragment representing a single Article detail screen. This fragment is
@@ -58,6 +64,7 @@ public class ArticleDetailFragment extends Fragment implements
     private ObservableScrollView mScrollView;
     private DrawInsetsFrameLayout mDrawInsetsFrameLayout;
     private ColorDrawable mStatusBarColorDrawable;
+    private ProgressBar mProgressBar;
 
     private int mTopInset;
     private View mPhotoContainerView;
@@ -66,11 +73,12 @@ public class ArticleDetailFragment extends Fragment implements
     private boolean mIsCard = false;
     private int mStatusBarFullOpacityBottom;
 
+
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss", Locale.US);
     // Use default locale format
     private SimpleDateFormat outputFormat = new SimpleDateFormat();
     // Most time functions can only handle 1902 - 2037
-    private GregorianCalendar START_OF_EPOCH = new GregorianCalendar(2,1,1);
+    private GregorianCalendar START_OF_EPOCH = new GregorianCalendar(2, 1, 1);
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -123,6 +131,8 @@ public class ArticleDetailFragment extends Fragment implements
         mDrawInsetsFrameLayout = mRootView.findViewById(R.id.draw_insets_frame_layout);
         mDrawInsetsFrameLayout.setOnInsetsCallback(insets -> mTopInset = insets.top);
 
+        mProgressBar = Objects.requireNonNull(getActivity()).findViewById(R.id.pb_holder);
+
         mScrollView = mRootView.findViewById(R.id.scrollview);
         mScrollView.setCallbacks(() -> {
             mScrollY = mScrollView.getScrollY();
@@ -136,7 +146,7 @@ public class ArticleDetailFragment extends Fragment implements
 
         mStatusBarColorDrawable = new ColorDrawable(0);
 
-        mRootView.findViewById(R.id.share_fab).setOnClickListener(view ->
+        mRootView.findViewById(R.id.inc_share_fab).setOnClickListener(view ->
                 startActivity(Intent.createChooser(ShareCompat.IntentBuilder.from(Objects.requireNonNull(getActivity()))
                         .setType("text/plain")
                         .setText("Some sample text")
@@ -197,7 +207,6 @@ public class ArticleDetailFragment extends Fragment implements
         bylineView.setMovementMethod(new LinkMovementMethod());
         TextView bodyView = mRootView.findViewById(R.id.article_body);
 
-
         if (mCursor != null) {
             mRootView.setAlpha(0);
             mRootView.setVisibility(View.VISIBLE);
@@ -220,40 +229,46 @@ public class ArticleDetailFragment extends Fragment implements
                 bylineView.setText(Html.fromHtml(
                         "<font color='#BDBDBD'>" +
                                 outputFormat.format(publishedDate) + " by </font><font color='#ffffff'>"
-                        + mCursor.getString(ArticleLoader.Query.AUTHOR)
+                                + mCursor.getString(ArticleLoader.Query.AUTHOR)
                                 + "</font>"));
 
             }
 
-
+            // load body text
             Spanned bodyText = Html.fromHtml(
                     mCursor.getString(ArticleLoader.Query.BODY)
                             .replaceAll("(\r\n|\n)", "<br />"));
             bodyView.setText(bodyText);
-            ImageLoaderHelper.getInstance(getActivity()).getImageLoader()
-                    .get(mCursor.getString(ArticleLoader.Query.PHOTO_URL), new ImageLoader.ImageListener() {
-                        @Override
-                        public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
-                            Bitmap bitmap = imageContainer.getBitmap();
-                            if (bitmap != null) {
-                                Palette p = Palette.generate(bitmap, 12);
-                                mMutedColor = p.getDarkMutedColor(0xFF333333);
-                                mPhotoView.setImageBitmap(imageContainer.getBitmap());
-                                mRootView.findViewById(R.id.meta_bar)
-                                        .setBackgroundColor(mMutedColor);
-                                updateStatusBar();
-                            }
-                        }
 
-                        @Override
-                        public void onErrorResponse(VolleyError volleyError) {
+            // load image
+            Target target = new Target() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                    Palette p = Palette.generate(bitmap, 12);
+                    mMutedColor = p.getDarkMutedColor(0xFF333333);
+                    mPhotoView.setImageBitmap(bitmap);
+                    mRootView.findViewById(R.id.meta_bar)
+                            .setBackgroundColor(mMutedColor);
+                    updateStatusBar();
+                }
 
-                        }
-                    });
+                @Override
+                public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                }
+
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {
+                }
+            };
+            Picasso.get()
+                    .load(mCursor.getString(ArticleLoader.Query.PHOTO_URL))
+                    .into(target);
+
+
         } else {
             mRootView.setVisibility(View.GONE);
             titleView.setText("N/A");
-            bylineView.setText("N/A" );
+            bylineView.setText("N/A");
             bodyView.setText("N/A");
         }
     }
@@ -279,8 +294,8 @@ public class ArticleDetailFragment extends Fragment implements
             mCursor.close();
             mCursor = null;
         }
-
         bindViews();
+        mProgressBar.setVisibility(View.GONE);
     }
 
     @Override
