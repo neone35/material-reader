@@ -2,6 +2,7 @@ package com.example.xyzreader.ui;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -27,6 +28,8 @@ import com.example.xyzreader.data.ArticleLoader;
 import com.example.xyzreader.data.ItemsContract;
 
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * An activity representing a single Article detail screen, letting you swipe between articles.
@@ -41,6 +44,7 @@ public class ArticleDetailActivity extends AppCompatActivity
     private long mSelectedItemId;
     private int mSelectedItemUpButtonFloor = Integer.MAX_VALUE;
     private int mTopInset;
+    public boolean isInstructiveMotionShown = false;
 
     private ViewPager mPager;
     private MyPagerAdapter mPagerAdapter;
@@ -113,6 +117,21 @@ public class ArticleDetailActivity extends AppCompatActivity
                 mSelectedItemId = mStartId;
             }
         }
+
+        // show instructive motion
+        if (!isInstructiveMotionShown)
+            showInstructiveMotion(mPager);
+    }
+
+    private void showInstructiveMotion(ViewPager pager) {
+        final Handler handler = new Handler();
+        handler.postDelayed(() ->
+                        ObjectAnimator.ofInt(pager, "scrollX", pager.getScrollX() + 100).setDuration(1000).start(),
+                2000);
+        handler.postDelayed(() ->
+                        ObjectAnimator.ofInt(pager, "scrollX", pager.getScrollX() - 100).setDuration(1000).start(),
+                3000);
+        isInstructiveMotionShown = true;
     }
 
     @NonNull

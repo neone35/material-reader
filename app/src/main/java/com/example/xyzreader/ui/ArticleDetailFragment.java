@@ -1,5 +1,7 @@
 package com.example.xyzreader.ui;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,6 +21,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.os.Bundle;
 import android.support.v4.app.ShareCompat;
@@ -67,8 +71,6 @@ public class ArticleDetailFragment extends Fragment implements
     private ProgressBar mProgressBar;
     private FloatingActionButton mGoToTopFab;
     private FloatingActionButton mShareFab;
-    private ExpandableTextView mExpBodyView;
-    private TextView mBodyView;
 
     private int mTopInset;
     private View mPhotoContainerView;
@@ -161,7 +163,7 @@ public class ArticleDetailFragment extends Fragment implements
         mShareFab.setOnClickListener(view ->
                 startActivity(Intent.createChooser(ShareCompat.IntentBuilder.from(Objects.requireNonNull(getActivity()))
                         .setType("text/plain")
-                        .setText(mBodyText.toString())
+                        .setText("Example text")
                         .getIntent(), getString(R.string.action_share))));
         mGoToTopFab = mRootView.findViewById(R.id.inc_go_top_fab);
         mGoToTopFab.setOnClickListener(v -> mScrollView.setScrollY(0));
@@ -271,7 +273,7 @@ public class ArticleDetailFragment extends Fragment implements
         TextView titleView = mRootView.findViewById(R.id.article_title);
         TextView bylineView = mRootView.findViewById(R.id.article_byline);
         bylineView.setMovementMethod(new LinkMovementMethod());
-        mExpBodyView = mRootView.findViewById(R.id.expandable_article_body);
+        ExpandableTextView mExpBodyView = mRootView.findViewById(R.id.expandable_article_body);
         // animation for expand
         setupExpandableBodyView(mExpBodyView);
 

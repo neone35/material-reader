@@ -1,0 +1,142 @@
+<com.example.xyzreader.ui.DrawInsetsFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/draw_insets_frame_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.example.xyzreader.ui.ObservableScrollView
+        android:id="@+id/scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/light_gray"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:id="@+id/photo_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/light_gray">
+                <!--suppress AndroidLintContentDescription -->
+
+                <include
+                    android:id="@+id/inc_detail_image"
+                    layout="@layout/detail_image_include" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/photo_background_protection" />
+
+                <TextView
+                    android:id="@+id/article_title"
+                    style="?android:attr/textAppearanceLarge"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_margin="8dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:lineSpacingMultiplier="0.9"
+                    android:paddingBottom="@dimen/detail_metabar_title_bottom_padding"
+                    android:textColor="?iconTint"
+                    android:textSize="@dimen/detail_title_text_size"
+                    android:textStyle="bold"
+                    tools:text="Article title" />
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:id="@+id/meta_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#333"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/detail_metabar_vert_padding"
+                android:paddingLeft="@dimen/detail_inner_horiz_margin"
+                android:paddingRight="@dimen/detail_inner_horiz_margin"
+                android:paddingTop="@dimen/detail_metabar_vert_padding"
+                tools:layout_editor_absoluteX="16dp">
+
+                <TextView
+                    android:id="@+id/article_byline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Article date and author"
+                    tools:textColor="@color/light_gray" />
+
+            </LinearLayout>
+
+            <at.blogc.android.views.ExpandableTextView
+                android:id="@+id/expandable_article_body"
+                style="@style/articleBody"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="96dp"
+                android:layout_marginRight="96dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/rounded_rect"
+                android:elevation="4dp"
+                android:ellipsize="middle"
+                android:lineSpacingMultiplier="@fraction/detail_body_line_spacing_multiplier"
+                android:maxLines="5"
+                android:padding="8dp"
+                android:textColor="@color/secondary_text_gray"
+                android:textColorLink="@color/accent_cyan"
+                android:textSize="@dimen/detail_body_text_size"
+                app:animation_duration="500"
+                tools:text="@string/lorem_ipsum" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp">
+
+                <TextView
+                    android:id="@+id/tv_read_more"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:gravity="center"
+                    android:text="@string/read_more"
+                    android:textColor="@color/icons_white"
+                    android:textSize="18sp" />
+
+                <ProgressBar
+                    android:id="@+id/pb_more"
+                    style="@android:style/Widget.DeviceDefault.ProgressBar"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:visibility="invisible" />
+
+            </FrameLayout>
+
+
+        </LinearLayout>
+
+    </com.example.xyzreader.ui.ObservableScrollView>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end">
+
+        <include
+            android:id="@+id/inc_share_fab"
+            layout="@layout/fab_share_include"
+            android:visibility="visible" />
+
+        <include
+            android:id="@+id/inc_go_top_fab"
+            layout="@layout/fab_go_up_include"
+            android:visibility="invisible" />
+
+    </FrameLayout>
+
+
+</com.example.xyzreader.ui.DrawInsetsFrameLayout>

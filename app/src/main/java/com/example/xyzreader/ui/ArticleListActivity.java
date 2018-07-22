@@ -70,7 +70,7 @@ public class ArticleListActivity extends AppCompatActivity implements
 
         mAppBarLayout = findViewById(R.id.app_bar_layout);
         // set elevation programatically
-        mAppBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> ViewCompat.setElevation(appBarLayout, 8));
+        mAppBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> ViewCompat.setElevation(appBarLayout, 4));
         mToolbar = findViewById(R.id.toolbar);
         final View toolbarContainerView = findViewById(R.id.toolbar_container);
 

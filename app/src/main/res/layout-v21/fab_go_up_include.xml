@@ -6,7 +6,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom|end"
-    android:layout_margin="16dp"
+    android:layout_margin="@dimen/fab_margin"
     android:elevation="@dimen/fab_elevation"
     app:fabSize="normal"
     app:srcCompat="@drawable/ic_arrow_upward_white_24dp" />
