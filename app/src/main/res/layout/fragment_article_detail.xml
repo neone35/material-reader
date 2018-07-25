@@ -20,7 +20,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/light_gray">
-                <!--suppress AndroidLintContentDescription -->
 
                 <include
                     android:id="@+id/inc_detail_image"

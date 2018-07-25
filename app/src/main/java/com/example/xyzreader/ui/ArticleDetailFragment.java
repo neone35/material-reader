@@ -244,12 +244,7 @@ public class ArticleDetailFragment extends Fragment implements
     private void setupExpandableBodyView(ExpandableTextView bodyView) {
         bodyView.setExpandInterpolator(new OvershootInterpolator());
         TextView tvReadMore = mRootView.findViewById(R.id.tv_read_more);
-        tvReadMore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bodyView.expand();
-            }
-        });
+        tvReadMore.setOnClickListener(v -> bodyView.expand());
         ProgressBar pbMoreLoader = mRootView.findViewById(R.id.pb_more);
         bodyView.addOnExpandListener(new ExpandableTextView.OnExpandListener() {
             @Override
@@ -314,7 +309,7 @@ public class ArticleDetailFragment extends Fragment implements
             Target target = new Target() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                    Palette p = Palette.generate(bitmap, 12);
+                    Palette p = Palette.from(bitmap).generate();
                     mMutedColor = p.getDarkMutedColor(0xFF333333);
                     mRootView.findViewById(R.id.meta_bar)
                             .setBackgroundColor(mMutedColor);
