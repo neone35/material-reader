@@ -7,10 +7,7 @@ In this project, you will redesign an app to follow the Material Design guidelin
 This project gives you an opportunity to improve an app’s design, a vital skill for building apps users will love. It also replicates a common developer task of updating and changing an app's design as new standards are released.
 
 ## Screenshots
-<!---
-![Material Reader user interface](https://preview.ibb.co/h57BROKEN3uy/tasty_baking.jpg "Material Reader user interface")
--->
-coming soon
+![Material Reader user interface](https://preview.ibb.co/kHCavp/material_reader_app.jpg "Material Reader user interface")
 
 ## What Did I Learn / Use?
 - Android design fundamentals
